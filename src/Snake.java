@@ -1,36 +1,27 @@
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Random;
 import java.awt.event.KeyEvent;
 
 public class Snake {
     private final int NUM_TILES_X;
     private final int NUM_TILES_Y;
-    private final int TILE_SIZE;
     private ArrayList<Point> snake;
-    private Point food;
     private int direction;
-    private boolean isGameOver;
+
 
     public Snake(int width, int height, int tileSize) {
         NUM_TILES_X = width / tileSize;
         NUM_TILES_Y = height / tileSize;
-        TILE_SIZE = tileSize;
         snake = new ArrayList<>();
         snake.add(new Point(NUM_TILES_X / 2, NUM_TILES_Y / 2)); // Голова
         snake.add(new Point(NUM_TILES_X / 2 - 1, NUM_TILES_Y / 2)); // Первая часть тела
         snake.add(new Point(NUM_TILES_X / 2 - 2, NUM_TILES_Y / 2)); // Вторая часть тела
         direction = KeyEvent.VK_RIGHT;
-        isGameOver = false;
-        spawnFood();
+
     }
 
     public ArrayList<Point> getSnake() {
         return snake;
-    }
-
-    public Point getFood() {
-        return food;
     }
 
     public void moveSnake() {
@@ -46,22 +37,48 @@ public class Snake {
 
         snake.add(0, newHead);
 
-        if (newHead.equals(food)) {
-            spawnFood(); // Змейка съела еду, спавним новую
-        } else {
+
+
             snake.remove(snake.size() - 1); // Убираем хвост
-        }
+    }
+// TODO generalizeaza checkColision
+public boolean checkDeathCollisions() {
+    Point head = snake.get(0);
+
+
+    if (isOutOfBounds(head)) {
+        return true;
     }
 
-    public boolean checkCollisions() {
-        Point head = snake.get(0);
+    if (isCollidingWithSelf(head)) {
+        return true;
+    }
 
-        // Проверка на столкновение с границами
-        if (head.x < 0 || head.x >= NUM_TILES_X || head.y < 0 || head.y >= NUM_TILES_Y) {
+    return false;
+}
+
+    public boolean checkCollision(Point point){
+
+        if (point.equals(snake.get(0))){
             return true;
-        }
+        } else {
+            return false;
 
-        // Проверка на столкновение с собой
+        }
+    }
+// T
+    public void addTail(){
+//        snake.add(snake.size() -1,new Point(snake.get(snake.size()-1)));
+        snake.add(snake.size() -1,new Point(100,100));
+
+    }
+
+
+    private boolean isOutOfBounds(Point head) {
+        return head.x < 0 || head.x >= NUM_TILES_X || head.y < 0 || head.y >= NUM_TILES_Y;
+    }
+
+    private boolean isCollidingWithSelf(Point head) {
         for (int i = 1; i < snake.size(); i++) {
             if (head.equals(snake.get(i))) {
                 return true;
@@ -69,6 +86,7 @@ public class Snake {
         }
         return false;
     }
+
 
     public void changeDirection(int newDirection) {
         if ((direction == KeyEvent.VK_LEFT && newDirection != KeyEvent.VK_RIGHT) ||
@@ -79,17 +97,13 @@ public class Snake {
         }
     }
 
-    public void spawnFood() {
-        Random rand = new Random();
-        food = new Point(rand.nextInt(NUM_TILES_X), rand.nextInt(NUM_TILES_Y));
-    }
+
 
     public void restartGame() {
         snake.clear();
         snake.add(new Point(NUM_TILES_X / 2, NUM_TILES_Y / 2)); // Голова
         snake.add(new Point(NUM_TILES_X / 2 - 1, NUM_TILES_Y / 2)); // Первая часть тела
         snake.add(new Point(NUM_TILES_X / 2 - 2, NUM_TILES_Y / 2)); // Вторая часть тела
-        spawnFood();
         direction = KeyEvent.VK_RIGHT;
     }
 }

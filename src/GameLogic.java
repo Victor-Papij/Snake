@@ -8,22 +8,18 @@ public class GameLogic extends JPanel implements ActionListener {
     private final int HEIGHT = 1080;
     private boolean isGameOver = false;
 
-    private JButton restartButton;  // Кнопка рестарта
+    private Button restartButton;  // Кнопка рестарта
     private Snake snake;
     private Timer timer;
+    private Food food;
 
     public GameLogic() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setBackground(Color.BLACK);
         setFocusable(true);
 
-        // Создание кнопки рестарта
-        restartButton = new JButton("Restart");
-        restartButton.setBounds(WIDTH / 2 - 50, HEIGHT / 2 + 100, 100, 40);
-        restartButton.setFont(new Font("Arial", Font.BOLD, 16));
-        restartButton.setFocusable(false);
-        restartButton.setVisible(false);  // Кнопка скрыта по умолчанию
-        restartButton.addActionListener(new ActionListener() {
+        restartButton = new Button(WIDTH / 2 - 50, HEIGHT / 2 + 100);
+        restartButton.addRestartActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 restartGame();
             }
@@ -32,9 +28,10 @@ public class GameLogic extends JPanel implements ActionListener {
         setLayout(null);
         add(restartButton);
 
-        // Создаем экземпляр змейки и таймер
+
         snake = new Snake(WIDTH, HEIGHT, TILE_SIZE);
         timer = new Timer(100, this);
+        food = new Food(WIDTH, HEIGHT, TILE_SIZE);
         timer.start();
 
         // Обработчик клавиш
@@ -76,16 +73,21 @@ public class GameLogic extends JPanel implements ActionListener {
 
             // Отображаем еду
             g.setColor(Color.RED);
-            Point food = snake.getFood();
-            g.fillRect(food.x * TILE_SIZE, food.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            Point foodPoint = food.getFood();
+            g.fillRect(foodPoint.x * TILE_SIZE, foodPoint.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
         }
     }
 
     private void checkCollisions() {
-        if (snake.checkCollisions()) {
+        if (snake.checkDeathCollisions()) {
             isGameOver = true;
             restartButton.setVisible(true);
         }
+        if (snake.checkCollision(food.getFood())) {
+            food.spawnFood();
+            snake.addTail();
+        }
+        if ()
     }
 
     private void restartGame() {
