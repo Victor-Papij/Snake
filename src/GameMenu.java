@@ -46,15 +46,15 @@ public class GameMenu {
         // Adaugam un handler pentru butonul „New Game”.
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                GameLogic.startGame();//Logica de pornire a jocului
-                frame.setVisible(false);//Ascundem meniul
+                startGame(); // Logica de pornire a jocului
+                frame.setVisible(false); // Ascundem meniul
             }
         });
 
         // Adaugam un handler pentru butonul „Setări”.
         settingButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                toggleSettingsPanel(); //Schimbarea vizibilității panoului de setari
+                toggleSettingsPanel(); // Schimbarea vizibilității panoului de setari
             }
         });
 
@@ -68,7 +68,7 @@ public class GameMenu {
         // Creem un panou de setari
         settingsPanel = new JPanel();
         settingsPanel.setBounds(50, 400, 300, 200);
-        settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.Y_AXIS)); //Dispunerea verticală a elementelor
+        settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.Y_AXIS)); // Dispunerea verticală a elementelor
 
         // Adaugam controalelor pentru setari
         JCheckBox soundCheckBox = new JCheckBox("Enable Sound");
@@ -93,10 +93,23 @@ public class GameMenu {
         // Afisarea ferestrei
         frame.setVisible(true);
     }
+
+    private void startGame() {
+        // Se creează fereastra de joc cu logica pentru "SnakeGame"
+        JFrame gameFrame = new JFrame("Snake Game");
+        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        gameFrame.setSize(1920, 1080);
+        gameFrame.setLocationRelativeTo(null);
+        gameFrame.add(new GameLogic());
+        gameFrame.setVisible(true);
+    }
+
     // Metoda de comutare a vizibilitații panoului de setari
     private void toggleSettingsPanel() {
         settingsPanel.setVisible(!settingsPanel.isVisible()); // Comutarea vizibilitatea
     }
 
-
+    public static void main(String[] args) {
+        new GameMenu();
+    }
 }
